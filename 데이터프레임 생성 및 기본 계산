@@ -1,0 +1,29 @@
+#pandas 패키지 불러오기
+import pandas as pd
+
+
+#데이터프레임 생성
+df = pd.DataFrame({'Category'   : ['상의','하의','기타'],
+                   'name'       : ['반팔', '청바지', '헤드폰'],
+                   'price'      : [20000, 30000, 55000]})
+df
+
+
+#합계 구하기
+sum(df['price'])
+
+
+#price 컬럼 내 데이터 갯수 구하기
+len(df.price)
+
+
+#price 컬럼 내 평균 구하기
+sum(df['price'])/3
+
+
+#최댓값 구하기
+max(df['price'])
+
+
+#최소값 구하기
+min(df['price']
