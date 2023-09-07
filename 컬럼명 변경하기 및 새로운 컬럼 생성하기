@@ -1,0 +1,24 @@
+#pandas 라이브러리 불러오기
+import pandas as pd
+
+
+#csv 파일 불러오기
+user = pd.read_csv('user_data_1.csv')
+user
+
+
+#컬럼명 변경
+user = user.rename(columns = {'주소':'juso'})
+user
+
+
+#컬럼명 여러 개 변경
+new_column_names = {'구매날짜':'Date','구매번호':'Number','구매자':'name','성별':'sex','상품명':'product'}
+
+user.rename(columns = new_column_names, inplace = True)
+user
+
+
+#새로운 컬럼 생성(파생변수 만들기)
+user['plusnumber'] = user['Number'] + 100
+user
