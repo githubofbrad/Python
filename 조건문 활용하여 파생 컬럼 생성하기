@@ -8,6 +8,10 @@ user['seoul_test'] = np.where(user['juso'] == '서울특별시', 'O', 'X')
 user
 
 
+#조건문 활용하여 새로운 컬럼 생성: df.assign() 활용
+user.assign( seoul_test = np.where(user['juso'] == '서울특별시', 'O', 'X'))
+
+
 #중첩 조건문 활용하여 새로운 컬럼 생성
 user['Date_test'] = np.where(user['Date'] >= 20220301, 'Vip',
                     np.where(user['Date'] >= 20220101, 'middle', 'under'))
