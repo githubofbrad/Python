@@ -1,0 +1,21 @@
+#라이브러리 불러오기
+import pandas as pd
+
+
+#csv 파일 불러오기
+purchase = pd.read_csv('상품_구매_데이터.csv')
+purchase
+
+
+#오름차순 정렬하기
+purchase.sort_values('가격')
+
+
+#내림차순 정렬하기
+purchase.sort_values('가격', ascending = False)
+
+
+#여러 정렬 기준
+purchase.sort_values(['가격','수량'])
+
+purchase.sort_values(['가격','수량'], ascending = [False, False])
