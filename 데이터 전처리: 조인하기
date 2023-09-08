@@ -1,0 +1,17 @@
+#라이브러리 불러오기
+import pandas as pd
+
+
+
+#csv파일 불러오기
+userdata1 = pd.read_csv('user_data_1.csv')
+userdata1
+
+userdata2 = pd.read_csv('user_data_2.csv')
+userdata2
+
+
+
+#데이터 조인(구매번호를 기준으로)
+user_data = pd.merge(userdata1, userdata2, how = 'left', on = '구매번호')
+user_data
