@@ -1,0 +1,30 @@
+#라이브러리 불러오기
+import pandas as pd
+
+
+
+#csv파일 불러오기
+purchase = pd.read_csv('상품_구매_데이터.csv')
+purchase
+
+purchase_data = pd.read_csv('category.csv')
+purchase_data
+
+
+
+#그룹화하여 값 요약하기
+purchase.groupby('상품명') \
+        .agg( 상품별가격합계 = ('가격', 'sum'))
+
+
+purchase.groupby('상품명') \
+        .agg( 상품별가격합계 = ('가격', 'sum'),
+              상품별가격평균 = ('가격', 'mean'),
+              상품별수량합계 = ('수량', 'sum')
+              )
+        
+
+
+#그룹화 두 번 진행하여 값 요약하기
+purchase_data.groupby(['cate1','cate2']) \
+             .agg(sum_pirce = ('price', 'sum'))
