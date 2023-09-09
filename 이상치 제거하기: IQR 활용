@@ -1,0 +1,29 @@
+#라이브러리 불러오기
+import pandas as pd
+import numpy as np
+
+
+#1사분위수 및 3사분위수 구하기
+sales25 = sales['count'].quantile(q = 0.25)
+
+sales75 = sales['count'].quantile(q = 0.75)
+
+  
+#iqr 구하기
+iqr = sales75 - sales25
+iqr
+
+
+#이상치 구하기
+sales25 - 1.5 * iqr
+
+sales75 + 1.5 * iqr
+
+
+#이상치 값 범위를 지정한 후 해당 범위 내 이상치를 null값으로 변경하기
+sales['count'] = np.where((sales['count'] < 124) | (sales['count'] > 859),
+                          np.nan, sales['count'])
+
+  
+#null값으로 변경한 이상치 제거
+sales.dropna()
