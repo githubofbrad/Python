@@ -1,0 +1,38 @@
+###예제데이터 출처: https://www.kaggle.com/datasets/rukenmissonnier/age-weight-height-bmi-analysis?resource=download
+
+#라이브러리 및 데이터 불러오기
+import pandas as pd
+import numpy as np
+import seaborn as sns
+
+user = pd.read_csv('유저별 키, 몸무게, bmi.csv')
+user
+
+
+
+#요약통계량 확인
+user.describe()
+
+
+
+#결측값 확인
+user['Age'].isna().sum()
+
+
+
+#나이대별 구간 나누기
+user = user.assign(age_section = np.where(user['Age'] < 20, '10대',
+                                 np.where(user['Age'] < 30, '20대',
+                                 np.where(user['Age'] < 40, '30대',
+                                 np.where(user['Age'] < 50, '40대',
+                                 np.where(user['Age'] < 60, '50대',
+                                                            '60대'))))))
+
+#나이대별 Bmi 평균 구하기
+group_height = user.groupby('age_section', as_index = False)\
+                   .agg(mean_Bmi = ('Bmi', 'mean'))
+
+
+
+#나이대별 Bmi 평균 막대그래프
+sns.boxplot(data = group_height, x = 'age_section', y = 'mean_Bmi')
