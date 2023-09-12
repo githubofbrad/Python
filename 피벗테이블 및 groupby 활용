@@ -1,0 +1,24 @@
+##라이브러리 및 csv파일 불러오기
+import pandas as pd
+
+user = pd.read_csv('user_data_1.csv')
+user
+
+
+
+##피벗테이블 생성하기
+pd.pivot_table(user, 
+               index = '상품명',    #행인덱스
+               columns = '주소',    #열인덱스
+               values = '구매자',   #값
+               aggfunc = 'count')   #집계방식 
+
+
+
+##groupby 활용
+#ex1.주소로 그룹화하여 구매번호 가장 큰 값 불러오기 및 내림차순 정렬
+user.groupby('주소')['구매번호'].max()\
+    .sort_values(ascending = False)
+
+#ex2. 주소로 그룹화하여 구매번호는 가장 큰 값, 상품명은 갯수 카운트(집계방식 다르게 계산)
+user.groupby('주소').agg({'구매번호':'max', '상품명':'count'})
