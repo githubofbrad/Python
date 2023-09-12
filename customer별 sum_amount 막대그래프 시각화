@@ -1,0 +1,27 @@
+###예제 데이터: https://www.kaggle.com/datasets/regivm/retailtransactiondata
+
+#라이브러리 삽입 및 csv파일 불러오기
+import pandas as pd
+import numpy as np
+import seaborn as sns
+
+data = pd.read_csv('Retail_Data_Transactions.csv')
+data
+
+
+#customer_id별 tran_amount 합계 후 내림차순 나열 및 상위 5개 구하기
+ customer_rank = data.groupby('customer_id', as_index = False)\
+                     .agg(sum_amount = ('tran_amount', 'sum'))\
+                     .sort_values('sum_amount', ascending = False)\
+                     .head(5)
+
+
+#막대 그래프 시각화
+sns.barplot(data = customer_rank, 
+            x = 'customer_id', 
+            y = 'sum_amount', 
+            color =  'black',
+            edgecolor = 'red', #테두리 색 지정
+            linewidth = 3,     #테두리 두께 지정
+            alpha = 0.5,       #막대 색상 투명도 지정
+            width = 0.8)       #막대 넓이 지정
