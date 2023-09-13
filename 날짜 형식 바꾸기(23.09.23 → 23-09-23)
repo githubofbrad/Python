@@ -1,0 +1,16 @@
+#라이브러리 및 csv파일 불러오기
+import pandas as pd
+
+data = pd.read_csv('/content/data_amount.csv')
+data
+
+
+
+#'.'을 '-'로 바꾸기
+data['Date'] = data['Date'].str.replace('.','-')
+data
+
+
+
+#문자형을 날짜형으로 변환
+data['Date'] = pd.to_datetime(data['Date'])
