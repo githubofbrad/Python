@@ -1,0 +1,49 @@
+#라이브러리 및 csv파일 불러오기
+import pandas as pd
+import seaborn as sns
+
+gmv = pd.read_csv('musinsa_gmv.csv')
+
+
+#gmv 내 gmv 컬럼의 쉼표 제거
+gmv['gmv'] = gmv['gmv'].str.replace(',', '').astype(float)
+
+
+
+#년도별 gmv 합계 중 상위 3개 년도  확인
+gmv.groupby('yyyy', as_index = False)\
+   .agg(sum_gmv = ('gmv', 'sum'))\
+   .sort_values('sum_gmv', ascending = False)\
+   .head(3)
+
+
+
+#막대그래프 출력
+sns.barplot(data = gmv, 
+            x = 'yyyy', 
+            y = 'gmv')
+
+
+
+#수평막대그래프로 나타내기
+sns.barplot(data = gmv, 
+            x = 'gmv', 
+            y = 'yyyy',
+            orient = 'h')
+
+
+
+#세부집단 나누기
+sns.barplot(data = gmv, 
+            x = 'yyyy', 
+            y = 'gmv', 
+            hue = 'category')
+
+
+
+#세부집단 나눈 후 누적으로 출력
+sns.barplot(data = gmv, 
+            x = 'yyyy', 
+            y = 'gmv', 
+            hue = 'category',
+            dodge = False)
