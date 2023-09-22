@@ -1,0 +1,21 @@
+###Sample data : https://www.kaggle.com/datasets/unsdsn/world-happiness
+
+
+#라이브러리 및 csv 파일 불러오기
+import pandas as pd
+
+report = pd.read_csv('World Happiness Report_2019.csv')
+report
+
+
+
+#상관계수와 유의확률 구하기
+from scipy import stats 
+
+stats.pearsonr(report['Score'], report['Social support'])
+
+
+======
+PearsonRResult(statistic=0.7770577880638643, pvalue=8.975119655183162e-33)
+따라서, 상관계수는 약 0.77로 양의 상관계수를 가지므로 Score와 Scocial support는 정비례 관계.
+또한, pvalue 값이 0.05 보다 작으므로 통계적으로 유의하다고 판단 가능.
