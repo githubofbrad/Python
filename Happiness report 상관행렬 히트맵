@@ -1,0 +1,20 @@
+###Sample data : https://www.kaggle.com/datasets/unsdsn/world-happiness
+
+#라이브러리 및 csv 파일 불러오기
+import pandas as pd
+
+report = pd.read_csv('World Happiness Report_2019.csv')
+report
+
+
+#상관행렬 만든 후 반올림
+report_cor = report.corr()
+report_cor = round(report_cor,2)
+report_cor
+
+
+#상관행렬 히트맵 출력(annot = TRUE: 상관계수 표시, cmap = 'RdBu': 컬러맵 표시)
+import seaborn as sns
+sns.heatmap(report_cor,
+            annot = True,
+            cmap = 'RdBu')
