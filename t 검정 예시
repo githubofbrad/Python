@@ -1,0 +1,20 @@
+##라이브러리 및 csv파일 불러오기
+import pandas as pd
+
+data = pd.read_csv('musinsa_gmv.csv')
+data
+
+
+##t 검정을 위한 변수 할당
+패션의류 = data.query('category == "패션 의류"')['gmv']
+신발 = data.query('category == "신발"')['gmv']
+
+
+##t 검정 수행
+from scipy import stats
+stats.ttest_ind(패션의류, 신발, equal_var = True)
+
+======
+*pvalue 값이 0.05 미만이면 통계적으로 유의하다고 판단.
+But, 위 결과는 pvalue=0.38415383207274145 이므로 통계적으로 유의하지 않는다고 판단할 수 있음.
+따라서, 카테고리 중 패션의류와 신발간의 gmv 차이는 통계적으로 유의하지 않다고 판단할 수 있음.
