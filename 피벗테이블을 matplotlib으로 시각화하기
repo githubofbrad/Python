@@ -1,0 +1,12 @@
+###피벗테이블로 나타내기
+pivot_data = pd.pivot_table(data, index = "month", columns = "item_name", values = 'price', aggfunc = 'sum')
+pivot_data.head()
+
+
+###matplotlib으로 시각화
+import matplotlib.pyplot as plt 
+%matplotlib inline
+plt.plot(list(pivot_data.index), pivot_data["shoes"], label = 'shoes')       #pivot_data가 데이터프레임 형식이므로 리스트 형식으로 반환하여 가로축으로 사용, 세로축은 상품명, label은 범례이름 
+plt.plot(list(pivot_data.index), pivot_data["clothes"], label = 'clothes')
+plt.plot(list(pivot_data.index), pivot_data["pants"], label = 'pants')
+plt.legend()                                                                 #범례표시하기
