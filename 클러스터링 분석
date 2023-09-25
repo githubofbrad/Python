@@ -1,0 +1,32 @@
+import pandas as pd
+
+clustering = pd.read_csv("클러스터링예시.csv")
+clustering
+
+
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+clustering_sc = sc.fit_transform(clustering)
+
+kmeans = KMeans(n_clusters = 3, random_state = 0)
+clusters = kmeans.fit(clustering_sc)
+clustering["cluster"] = clusters.labels_
+print(clustering["cluster"].unique())
+clustering.head()
+
+
+from sklearn.decomposition import PCA
+X = clustering_sc
+pca = PCA(n_components=2)
+pca.fit(X)
+x_pca = pca.transform(X)
+pca_df = pd.DataFrame(x_pca)
+pca_df["cluster"] = clustering["cluster"]
+
+
+import matplotlib.pyplot as plt
+%matplotlib inline
+for i in clustering["cluster"].unique():
+    tmp = pca_df.loc[pca_df["cluster"]==i]
+    plt.scatter(tmp[0], tmp[1])
