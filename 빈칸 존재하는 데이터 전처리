@@ -1,0 +1,4 @@
+#빈칸 갯수에 따라서 str.replace(빈칸,"") 내 빈칸 갯수를 늘리기
+data["고객이름"] = data["고객이름"].str.replace("  ","")
+data["고객이름"] = data["고객이름"].str.replace(" ","")
+data["고객이름"].head()
