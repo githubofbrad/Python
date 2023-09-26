@@ -1,0 +1,146 @@
+###라이브러리 및 csv파일 불러오기###
+import pandas as pd
+
+customer_master = pd.read_csv('customer_master.csv')
+item_master = pd.read_csv('item_master.csv')
+transaction_1 = pd.read_csv('transaction_1.csv')
+transaction_2 = pd.read_csv('transaction_2.csv')
+transaction_detail_1 = pd.read_csv('transaction_detail_1.csv')
+transaction_detail_2 = pd.read_csv('transaction_detail_2.csv')
+
+uriage_data = pd.read_csv('uriage.csv')
+kokyaku_data = pd.read_excel('kokyaku_daicho.xlsx')
+
+
+
+###흩어져 있는 데이터 세로 방향 결합(pd.concat)##
+transaction = pd.concat([transaction_1, transaction_2], ignore_index = False)
+transaction
+
+transaction_datail = pd.concat([transaction_detail_1, transaction_detail_2], ignore_index = False)
+transaction_datail
+
+
+
+###가로방향 결합(pd.merge)###
+join_data = pd.merge(transaction_datail, transaction[["transaction_id", "payment_date", "customer_id"]], on="transaction_id", how = "left")
+join_data
+
+join_data = pd.merge(join_data, customer_master, on = "customer_id", how = "left")
+join_data = pd.merge(join_data, item_master, on = "item_id", how = "left")
+join_data
+
+
+
+###분석에 필요한 컬럼생성###
+join_data["price"] = join_data["quantity"] * join_data["item_price"]
+
+
+
+###검산하기(price 합 일치하는지)###
+#방법1
+print(join_data["price"].sum())
+print(transaction["price"].sum())
+
+#방법2
+join_data["price"].sum() == transaction["price"].sum()
+
+
+
+###결측값 확인###
+join_data.isnull().sum()
+
+
+
+###통계량 확인###
+join_data.describe()
+
+
+
+###데이터 내 기간 확인(시작일, 마지막일)###
+print(join_data["payment_date"].min())
+print(join_data["payment_date"].max())
+
+
+
+###년도월 혹은 연/월/일 데이터로 변경###
+#방법1:날짜 데이터로 변경 후 년도월 데이터로 전처리
+join_data["payment_date"] = pd.to_datetime(join_data["payment_date"])
+join_data["payment_month"] = join_data["payment_date"].dt.strftime("Y%m")
+
+#방법2: 연/월/일 데이터로 각각 변경
+join_data["payment_date"] = pd.to_datetime(join_data["payment_date"])
+
+join_data['payment_year'] = join_data['payment_date'].dt.year
+join_data['payment_month'] = join_data['payment_date'].dt.month
+join_data['payment_day'] = join_data['payment_date'].dt.day
+
+
+
+###월별 price 합계 & 월별,상품별로 price, quantity 집계###
+join_data.groupby("payment_month").sum()["price"]
+join_data.groupby(["payment_month", "item_name"]).sum()[["price","quantity"]]
+
+
+
+###item_name별로 price, quatitiy 합계 구하기 + quantity 기준으로 내림차순 정렬하기###
+join_data.groupby(["item_name"], as_index = False).sum()[["price","quantity"]]\
+         .sort_values(by = "quantity", ascending = False)
+
+
+
+====================
+
+###결측값 확인###
+print(uriage_data.isnull().sum())
+print(kokyaku_data.isnull().sum())
+
+
+
+###상품명 유니크 수 확인###
+len(pd.unique(uriage_data["item_name"]))
+
+
+
+###상품명 대문자 변경 & 공백 제거###
+uriage_data["item_name"] = uriage_data["item_name"].str.upper
+
+uriage_data["item_name"] = uriage_data["item_name"].str.replace(" ", "") 
+uriage_data["item_name"] = uriage_data["item_name"].str.replace("  ", "") 
+
+uriage_data.sort_values(by = "item_name", ascending = True)
+
+
+
+###상품명 갯수 검증###
+print(len(pd.unique(uriage_data["item_name"])))
+print(pd.unique(uriage_data["item_name"]))
+
+
+
+###결측값 채우기 관련 내용###
+#case1: 매출 내 데이터를 평균 값으로 대체하기(아래 예시는 import된 데이터와 상관 없는 예시)
+sales['count'].mean()
+
+sales['count'] = sales['count'].fillna(437.875)
+sales
+
+#case2: 상품명 내 해당하는 가격의 최대값으로 결측값 채우기(uriage_data와 관련된 예시)
+null = uriage_data["item_price"].isnull()
+for trg in list(uriage_data.loc[null, "item_name"].unique()):
+    price = uriage_data.loc[(~null) & (uriage_data["item_name"] == trg), "item_price"].max()
+    uriage_data["item_price"].loc[(null) & (uriage_data["item_name"]==trg)] = price
+
+
+
+###날짜데이터 전처리###
+#'.'을 '-'로 바꾸기 & 문자형을 날짜형으로 변환
+data['Date'] = data['Date'].str.replace('.','-')
+data['Date'] = pd.to_datetime(data['Date'])
+
+
+
+###전처리 완료한 데이터를 새로운 데이터 파일로 생성###
+final_data = join_data[["컬럼1", "컬럼2", "컬럼3", "컬럼4", "컬럼5"]]
+final_data.to_csv("final_data.csv", index = False)
+
