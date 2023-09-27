@@ -1,0 +1,62 @@
+#라이브러리 및 csv파일 삽입
+import pandas as pd
+gmv = pd.read_csv('musinsa_gmv.csv')
+
+
+
+#단일행선택
+gmv.loc[0]
+
+
+
+#여러행선택
+gmv.loc[[0,2,3,5]]
+
+
+
+#특정열선택
+gmv.loc[:,"gmv"]
+
+
+
+#특정 행과 열 선택
+gmv.loc[2,'gmv']
+
+gmv.loc[gmv['category'] == '신발', 'gmv'].values[0]
+
+
+
+#조건에 따라 데이터 필터링
+gmv.loc[gmv['gmv'] >= 90000]\
+   .sort_values(by = 'gmv', ascending = False)\
+   .head(3)
+
+
+
+#조건에 따른 데이터 수정(ex.gmv가 50,000 이하인 gmv에 100씩 곱하기
+gmv.loc[gmv['gmv']<50000, 'gmv'] * 100
+
+
+
+#조건에 따라 데이터 필터링2
+gmv.loc[(gmv['yyyy']==2022) & (gmv['gmv'] >= 90000)]
+
+
+
+# 각 행에 대해 사용자 정의 함수 적용
+def custom_function(row):
+    return row['gmv'] * 2
+
+gmv['gmv_2배'] = gmv.loc[:, ['gmv']].apply(custom_function, axis=1)
+gmv
+
+
+
+# gmv가 90000 이상인 경우 'vip' 열 생성
+gmv.loc[gmv['gmv'] >= 90000, 'vip'] = True
+gmv
+
+
+
+#특정문자열을 포함하는 행 선택
+gmv.loc[gmv['category'].str.contains('패션')]
