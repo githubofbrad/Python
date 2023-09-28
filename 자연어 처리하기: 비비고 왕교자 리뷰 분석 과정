@@ -1,0 +1,127 @@
+#라이브러리 및 csv파일 불러오기
+import pandas as pd
+
+review = pd.read_csv('비비고왕교자리뷰.csv')
+review
+
+
+
+#평점 최소 및 최대값 확인
+print(review["평점"].max())
+print(review["평점"].min())
+
+
+
+#결측값 확인(결측값 존재한다면 dropna()로 삭제 가능)
+review.isnull().sum()
+
+
+
+#리뷰 길이 확인 및 컬럼 생성
+review["length"] = review["리뷰"].str.len()
+review
+
+
+
+#리뷰 길이 확인 및 컬럼 생성
+review["length"] = review["리뷰"].str.len()
+review
+
+
+
+#리뷰 길이 분포 히스토그램 생성
+import matplotlib.pyplot as plt
+%matplotlib inline
+plt.hist(review["length"])
+
+
+
+#리뷰 내 명사만 추출
+from konlpy.tag import Twitter
+twt = Twitter()
+
+all_words = []
+parts = ['Noun']
+for n in range(len(review)):
+    text = review["리뷰"].iloc[n]
+    words = twt.pos(text)
+    words_arr = []
+    for i in words:
+        if i == 'EOS' or i == " ": continue
+        word_tmp = i[0]
+        part = i[1]
+        if not (part in parts): continue
+        words_arr.append(word_tmp)
+    all_words.extend(words_arr)
+print(all_words)
+
+
+
+#명사만 추출한 값 데이터 프레임 생성 후 명사별 합계 구하기&정렬
+all_words_df = pd.DataFrame({"words":all_words, "count":len(all_words)*[1]})
+all_words_df = all_words_df.groupby("words").sum()
+all_words_df.sort_values("count", ascending = False).head()
+
+
+
+#불필요한 값 제외하기(필요하다면 반복적으로 수행)
+stop_words = ["왕교", "비비고", "만두", "중", "이"]
+all_words = []
+parts = ['Noun']
+for n in range(len(review)):
+    text = review["리뷰"].iloc[n]
+    words = twt.pos(text)
+    words_arr = []
+    for i in words:
+        if i == 'EOS' or i == " ": continue
+        word_tmp = i[0]
+        part = i[1]
+        if not (part in parts): continue
+        if word_tmp in stop_words: continue
+        words_arr.append(word_tmp)
+    all_words.extend(words_arr)
+print(all_words)
+
+
+
+#명사만 추출한 값&불필요한 값 제외한 값 데이터 프레임 생성 후 명사별 합계 구하기&정렬
+all_words_df = pd.DataFrame({"words":all_words, "count":len(all_words)*[1]})
+all_words_df = all_words_df.groupby("words").sum()
+all_words_df.sort_values("count", ascending = False).head()
+
+
+
+#리뷰 내 명사와 평점 관계 파악
+stop_words = ["왕교", "비비고", "만두", "중", "이"]
+parts = ["Noun"]
+all_words = []
+satisfaction = []
+for n in range(len(review)):
+    text = review["리뷰"].iloc[n]
+    words = twt.pos(text)
+    words_arr = []
+    for i in words:
+        if i == 'EOS' or i == " ": continue
+        word_tmp = i[0]
+        part = i[1]
+        if not (part in parts): continue
+        if word_tmp in stop_words: continue
+        words_arr.append(word_tmp)
+        satisfaction.append(review["평점"].iloc[n])
+    all_words.extend(words_arr)
+all_words_df = pd.DataFrame({"words":all_words, "satisfaction":satisfaction, "count":len(all_words)*[1]})
+all_words_df.sort_values(by = "satisfaction", ascending = False)
+
+
+
+#리뷰 내 명사 그룹화 후 만족도 평균 및 갯수 구하기
+words_satisfaction = all_words_df.groupby("words").mean()["satisfaction"]
+words_count = all_words_df.groupby("words").sum()["count"]
+words_df = pd.concat([words_satisfaction, words_count], axis = 1)
+words_df.head()
+
+
+
+#명사 개수 5개 이상 나온 값에서 만족도 높은 순위로 정렬하기
+words_df = words_df.loc[words_df["count"]>=5]
+words_df.sort_values("satisfaction", ascending = False).head()
