@@ -1,0 +1,81 @@
+###데이터 원본: https://www.kaggle.com/datasets/crxxom/daily-google-news
+###분석글: https://blog.naver.com/mabiseo/223229873205
+
+
+
+#라이브러리 및 csv파일 불러오기
+import pandas as pd
+
+news = pd.read_csv('Daily_Google_news_2023_9.csv')
+news
+
+
+
+#다섯번째 열까지만 가져오기
+news = news.loc[:,'Title':'Category']
+news
+
+
+
+#null값 확인 및 제거
+news.isnull().sum()
+news = news.dropna()
+
+
+
+#요약통계량 확인
+news.describe()
+
+
+
+#기사 카테고리 순위 구하기 
+category_count = news.groupby('Category', as_index = False)\
+                     .agg(count = ('Category', 'count'))\
+                     .sort_values(by = 'count' , ascending = False)\
+                     .head(10)
+category_count
+
+
+
+#카테고리 순위 시각화(기본)
+import matplotlib.pyplot as plt 
+%matplotlib inline
+
+x = category_count.loc[:,'Category']
+y = category_count.loc[:,'count']
+
+plt.bar(x, y)
+
+
+
+#카테고리 순위 시각화(차트 사이즈, 막대그래프 사이즈, 색상 설정)
+import matplotlib.pyplot as plt 
+%matplotlib inline
+
+x = category_count.loc[:,'Category']
+y = category_count.loc[:,'count']
+
+plt.figure(figsize=(10, 5))
+bar_width = 0.5
+
+max_count = y.max()
+colors = ['red' if count == max_count else 'gray' for count in y]
+
+plt.bar(x, y , width = bar_width, color = colors)
+
+
+
+#날짜 데이터 전처리: 숫자2로 시작하지 않는 DateTime 제거(*DateTime에 날짜 형식이 아닌 yahoo같은 문자가 존재했음)
+news = news[news['DateTime'].str.startswith('2', na=False)]
+
+
+
+#날짜 데이터로 변환 및 연도,월, 연도/월 추출
+date = news['DateTime'] = pd.to_datetime(news['DateTime'])
+
+  #1
+  date_year = news['DateTime'].dt.year
+  date_month = news['DateTime'].dt.month
+
+  #2
+  date_year_month = news["DateTime"].dt.strftime("Y%m")
