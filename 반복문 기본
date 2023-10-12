@@ -1,0 +1,32 @@
+--for문 
+for 변수 in range(시작값, 끝값+1, 증가값):
+
+
+
+--while문
+변수 = 시작값
+while 변수값 < 끝값:
+   변수 = 변수 + 증가값
+
+
+
+--팩토리얼 구하기 예제
+n = int(input("n의 값을 입력하세요.: "))
+factorial = 1
+
+for i in range(1,n+1):
+    factorial = factorial*i
+print("%d 팩토리얼 값은 %d 입니다." % (n, factorial))
+
+
+
+--3의 배수 제외한 후, 합 구하기 예제
+hap, i = 0, 0
+
+for i in range (1,10):
+    if i % 3 == 0:
+        continue   
+    hap+=i
+
+print("계산 결과는 %d 입니다." % hap)
+
