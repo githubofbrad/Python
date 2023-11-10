@@ -1,0 +1,8 @@
+#'@'를 기준으로 split하여 아이디&도메인 추출
+inStr = input("이메일 주소를 입력하시오: ")
+
+email = inStr.split('@')
+
+print(inStr)
+print("아이디 :", email[0])
+print("도메인 :", email[1])
