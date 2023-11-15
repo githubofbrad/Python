@@ -1,0 +1,8 @@
+#문자열 내에서 숫자 제거하기
+inStr = "글자입니다 1234"
+outStr = ""
+for i in range(0, len(inStr)) :
+    if inStr[i].isdigit() == False:
+       outStr += inStr[i]
+print("원 문자열==> "+ '[' + inStr + ']')
+print("숫자 제거==> "+ '[' + outStr + ']')
